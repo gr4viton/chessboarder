@@ -25,45 +25,6 @@ class Chessboarder():
         self.add_title()
         self.add_frame()
         self.output()
-    #
-    # def __init__(self, opts, help_string):
-    #     self.opts = opts
-    #     self.help_string = help_string
-    #
-    #     self.title = False
-    #     self.get_opts()
-    #
-    #     self.init_swg()
-    #     self.create_chessboard()
-    #     if self.title == True:
-    #         self.add_title()
-    #     self.output()
-    #
-    # def get_opts(self):
-    #     for opt, arg in self.opts:
-    #         if opt in ('-h', '--help', '-?'):
-    #             print(self.help_string)
-    #             sys.exit()
-    #         elif opt in ('-a', '--a-side'):
-    #             self.a = arg
-    #         elif opt in ('-b', '--b-side'):
-    #             self.b = arg
-    #         elif opt in ('-x', '--x-offset'):
-    #             self.x = arg
-    #         elif opt in ('-y', '--y-offset'):
-    #             self.y = arg
-    #         elif opt in ('-c', '--color'):
-    #             self.color = arg
-    #         elif opt in ('-C', '--color2'):
-    #             self.color2 = arg
-    #         elif opt in ('-X', '--paper-width'):
-    #             self.w = arg
-    #         elif opt in ('-Y', '--paper-height'):
-    #             self.h = arg
-    #         elif opt in ('-f', '--frame-color'):
-    #             self.frame_color = arg
-    #         elif opt == '-t':
-    #             self.title = True
 
     def set_unit(self, unit_str):
         self.unit_str = 'mm'
@@ -135,9 +96,7 @@ class Chessboarder():
 
 if __name__ == '__main__':
     help_string = 'chessboarder -a <a-side> -b <b-side> -x <x-offsets> -y <y-offsets> -c <color-odd> -C <color2-even> -X <paper-width> -Y <paper-height> -[t]itle-print -f <frame-print-color>'
-    # args = sys.args
     argv = sys.argv
-    # getopt.getopt(args, options, [long_options])
 
     try:
       opts, args = getopt.getopt(argv, 'ha:bxycCtfXY:',
@@ -146,7 +105,6 @@ if __name__ == '__main__':
         print('chessboarder --help')
 
     if opts:
-        # Chessboarder(opts, help_string)
         unit_str='mm'
         title=False
         color='#000000'
