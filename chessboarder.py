@@ -3,10 +3,17 @@ from svgwrite import cm, mm
 import sys, getopt
 from math import floor
 
+try:
+    import cairosvg
+except:
+    NO_PDF = True
+else:
+    NO_PDF = False
+
 class Chessboarder():
 
     def __init__(self, a, b, x, y, unit_str='mm', print_title=False, color='#000000',
-                 color2=None, h=297, w=210, frame_color=None):
+                 color2=None, h=297, w=210, frame_color=None, pdf=False):
         self.a = a
         self.b = b
         self.x = x
@@ -19,6 +26,7 @@ class Chessboarder():
         self.color = color
         self.color2 = color2
         self.frame_color = frame_color # e.g 'green'
+        self.pdf = pdf
 
         self.init_swg()
         self.create_chessboard()
@@ -34,8 +42,14 @@ class Chessboarder():
             self.unit = cm
 
     def output(self):
+
         self.dwg.filename = self.title + '.svg'
+        print('Saved svg chessboard file:\n', self.dwg.filename ,'')
         self.dwg.save()
+        if self.pdf:
+            cairosvg.svg2pdf(url=self.dwg.filename,
+                             write_to= self.title + '.pdf')
+            print('Saved pdf chessboard file:\n', self.title + '.pdf' ,'')
 
     def init_swg(self):
         sh = str(self.h)
@@ -109,20 +123,13 @@ if __name__ == '__main__':
         exit()
 
     argv = sys.argv[1:]
-    # print(sys.argv)
-    # args = 'chessboarder.py -a -b -cfoo -d bar a1 a2'.split()
-    # print(args)
-    # # ['-a', '-b', '-cfoo', '-d', 'bar', 'a1', 'a2']
-    # optlist, args = getopt.getopt(args, 'abc:d:')
-    # print(optlist)
-    # #[('-a', ''), ('-b', ''), ('-c', 'foo'), ('-d', 'bar')]
-    # print(args)
-    # # ['a1', 'a2']
 
     try:
       print('Args to parse:', argv)
-      argOptString = 'ha:b:x:y:c:C:tf:X:Y:'
-      argLongOptString = ['help=', '?=', 'x-offset=', 'y-offset=', 'color=', 'color2=', 'a-side=', 'b-side=', 'paper-width=', 'paper-height=', 'frame-color=']
+      argOptString = 'ha:b:x:y:c:C:tf:X:Y:P'
+      argLongOptString = ['help=', '?=', 'x-offset=', 'y-offset=', 'color=', 'color2=',
+                          'a-side=', 'b-side=',
+                          'paper-width=', 'paper-height=', 'frame-color=', 'pdf=']
       opts, args = getopt.getopt(argv, argOptString, argLongOptString)
       print('Parsed opts:', opts)
       print('Not parsed args:', args)
@@ -142,6 +149,7 @@ if __name__ == '__main__':
             b = None
             x = y = 10
             print_title = None
+            pdf = False
 
             for opt, arg in opts:
                 if opt in ('-h', '--help', '-?'):
@@ -167,11 +175,22 @@ if __name__ == '__main__':
                     frame_color = arg
                 elif opt == '-t':
                     print_title = True
+                elif opt in  ('-P', '--pdf'):
+                    if NO_PDF == True:
+                        print(""">>> cairosvg module not found
+>>> You cannot export chessboard.svg to pdf format - generatign svg only.
+>>> Please install cairosvg via pip:
+>>> $ pip install cairosvg
+>>> or download whl for Windows from:
+>>> https://pypi.python.org/pypi/CairoSVG""")
+                    else:
+                        pdf = True
 
             if b is None:
                 b = a
             Chessboarder(a, b, x, y, color=color, color2=color2,
-                         h=297, w=210, frame_color=frame_color, print_title=print_title)
+                         h=297, w=210, frame_color=frame_color, print_title=print_title,
+                         pdf=pdf)
             exit()
 
 
